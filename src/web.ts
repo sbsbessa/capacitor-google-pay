@@ -3,8 +3,40 @@ import { WebPlugin } from '@capacitor/core';
 import type { GooglePayPlugin } from './definitions';
 
 export class GooglePayWeb extends WebPlugin implements GooglePayPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+
+  getEnvironment(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  getStableHardwareId(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  getActiveWalletID(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  getTokenStatus(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  listTokens(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  isTokenized(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  pushProvision(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  requestDeleteToken(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  registerDataChangedListener(): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
   }
 }
