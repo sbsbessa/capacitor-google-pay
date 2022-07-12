@@ -49,7 +49,7 @@ repositories {
     google()
     mavenCentral()
     jcenter()
-    maven { url "$sdkDir//extras/google/m2repository"}
+    maven { url "$sdkDir/extras/google/m2repository"}
 }
 
 

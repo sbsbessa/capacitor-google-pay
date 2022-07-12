@@ -9,6 +9,15 @@ npm install capacitor-google-pay
 npx cap sync
 ```
 
+## Prepare Lib
+1. Get access to [Android Push Provisioning API](https://developers.google.com/pay/issuers/apis/push-provisioning/android)
+2. Set up your environment and [Integrate the SDK](https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup#integrating_the_sdk)
+3. Unzip downloaded m2repository to `<path to sdk.dir>/extras/google/m2repository`, 
+
+   For example: `~/Library/Android/sdk/extras/google/m2repository`
+4. Request [Push Provisioning API Access](https://developers.google.com/pay/issuers/apis/push-provisioning/android/allowlist)
+5. Here we go
+
 ## API
 
 <docgen-index>
@@ -239,16 +248,16 @@ returns the status of a token with a given token ID
 
 #### GooglePayProvisionOptions
 
-| Prop             | Type                                                | Description                                                                                      | Since |
-| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----- |
-| **`opc`**        | <code>string</code>                                 | Sets Opaque Payment Card binary data.                                                            | 1.0.0 |
-| **`tsp`**        | <code>string</code>                                 | Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).        | 1.0.0 |
-| **`clientName`** | <code>string</code>                                 | Sets the clientName that should be used for the tokenization attempt (see TokenServiceProvider). | 1.0.0 |
-| **`lastDigits`** | <code>string</code>                                 | Sets the lastDigits that should be used for the tokenization attempt (see TokenServiceProvider). | 1.0.0 |
-| **`address`**    | <code><a href="#gpayaddress">GPayAddress</a></code> | Sets the address that should be used for the tokenization attempt (see TokenServiceProvider).    | 1.0.0 |
+| Prop             | Type                                                          | Description                                                                                      | Since |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----- |
+| **`opc`**        | <code>string</code>                                           | Sets Opaque Payment Card binary data.                                                            | 1.0.0 |
+| **`tsp`**        | <code>string</code>                                           | Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).        | 1.0.0 |
+| **`clientName`** | <code>string</code>                                           | Sets the clientName that should be used for the tokenization attempt (see TokenServiceProvider). | 1.0.0 |
+| **`lastDigits`** | <code>string</code>                                           | Sets the lastDigits that should be used for the tokenization attempt (see TokenServiceProvider). | 1.0.0 |
+| **`address`**    | <code><a href="#googlepayaddress">GooglePayAddress</a></code> | Sets the address that should be used for the tokenization attempt (see TokenServiceProvider).    | 1.0.0 |
 
 
-#### GPayAddress
+#### GooglePayAddress
 
 | Prop                     | Type                | Description         | Since |
 | ------------------------ | ------------------- | ------------------- | ----- |

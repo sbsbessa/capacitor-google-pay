@@ -1,6 +1,6 @@
 {
   "name": "capacitor-google-pay",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Pay In-App Provisioning",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -24,7 +24,7 @@
     "capacitor",
     "plugin",
     "native",
-    "google pay"
+    "google pay issuers"
   ],
   "scripts": {
     "verify": "npm run verify:android && npm run verify:web",

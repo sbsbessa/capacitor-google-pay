@@ -10,7 +10,7 @@ export enum ErrorCodeReference {
   INVALID_TOKEN = -7
 }
 
-export interface GPayAddress {
+export interface GooglePayAddress {
   /**
    * Address name
    *
@@ -103,7 +103,7 @@ export interface GooglePayProvisionOptions {
    *
    * @since 1.0.0
    */
-  address: GPayAddress;
+  address: GooglePayAddress;
 }
 
 export interface GooglePayIsTokenizedOptions {
@@ -207,7 +207,7 @@ export interface GooglePayPlugin {
    * @param options.tsp {string} Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).
    * @param options.clientName {string} Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).
    * @param options.lastDigits {string} Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).
-   * @param options.address {GPayAddress} Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).
+   * @param options.address {GooglePayAddress} Sets the TSP that should be used for the tokenization attempt (see TokenServiceProvider).
    * @return {Promise<{tokenId: string}>}
    *
    * @since 1.0.0
