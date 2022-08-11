@@ -1,6 +1,6 @@
 {
   "name": "capacitor-google-pay",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Google Pay In-App Provisioning",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
