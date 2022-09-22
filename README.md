@@ -32,6 +32,7 @@ npx cap sync
 * [`isTokenized(...)`](#istokenized)
 * [`pushProvision(...)`](#pushprovision)
 * [`requestDeleteToken(...)`](#requestdeletetoken)
+* [`createWallet()`](#createwallet)
 * [`registerDataChangedListener()`](#registerdatachangedlistener)
 * [Interfaces](#interfaces)
 
@@ -201,6 +202,21 @@ Starts the push tokenization flow
 **Returns:** <code>any</code>
 
 **Since:** 1.0.0
+
+--------------------
+
+
+### createWallet()
+
+```typescript
+createWallet() => any
+```
+
+Initializes create wallet
+
+**Returns:** <code>any</code>
+
+**Since:** 4.0.1
 
 --------------------
 

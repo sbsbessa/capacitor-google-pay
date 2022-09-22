@@ -74,11 +74,6 @@ public class GooglePayPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void pushProvision(PluginCall call) {
-        implementation.createWallet(call);
-    }
-
-    @PluginMethod
     public void requestDeleteToken(PluginCall call) {
         implementation.requestDeleteToken(call);
     }
