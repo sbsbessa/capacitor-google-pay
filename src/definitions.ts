@@ -224,6 +224,15 @@ export interface GooglePayPlugin {
   requestDeleteToken(options: GooglePayTokenOptions): Promise<{ isRemoved: boolean }>;
 
   /**
+   *  Initializes create wallet
+   * @param options {GooglePayTokenOptions} Token Options
+   * @return {Promise<any>}
+   *
+   * @since 4.0.1
+   */
+  createWallet(): Promise<any>;
+
+  /**
    * returns the status of a token with a given token ID
    * @return {Promise<any>}
    *
