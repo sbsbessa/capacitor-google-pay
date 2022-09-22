@@ -230,14 +230,7 @@ public class GooglePay {
                                     ApiException apiException = (ApiException) task.getException();
                                     assert apiException != null;
                                     if (apiException.getStatusCode() == TAP_AND_PAY_NO_ACTIVE_WALLET) {
-                                        // There is no wallet. A wallet will be created when tokenize()
-                                        // or pushTokenize() is called.
-                                        // If necessary, you can call createWallet() to create a wallet
-                                        // eagerly before constructing an OPC (Opaque Payment Card)
-                                        // to pass into pushTokenize()
-                                        createWallet(call);
-                                        //getActiveWalletID(call);
-                                        call.reject("Active wallet not found");
+                                        call.reject("Active wallet not found", "ACTIVE_WALLET_NOT_FOUND");
                                     } else {
                                         call.reject(apiException.getMessage());
                                     }
