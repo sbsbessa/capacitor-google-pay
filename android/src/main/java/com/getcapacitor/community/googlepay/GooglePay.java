@@ -116,13 +116,15 @@ public class GooglePay {
             return;
         }
 
+        JSObject ret = new JSObject();
+        JSObject result = new JSObject();
+
         if (requestCode == REQUEST_CODE_PUSH_TOKENIZE) {
             if (resultCode == RESULT_CANCELED) {
                 call.reject("PUSH_PROVISION_CANCEL", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
             } else if (resultCode == RESULT_OK) {
                 // The action succeeded.
                 String tokenId = data.getStringExtra(TapAndPay.EXTRA_ISSUER_TOKEN_ID);
-                JSObject result = new JSObject();
                 result.put("tokenId", tokenId);
                 call.resolve(result);
             }
@@ -131,7 +133,9 @@ public class GooglePay {
                 // The user canceled the request.
                 call.reject("cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
             } else if (resultCode == RESULT_OK) {
-                call.resolve();
+                Log.i(TAG, "Google wallet created --- ");
+                result.put("isCreated", true);
+                call.resolve(result);
             }
         } else if (requestCode == REQUEST_CODE_DELETE_TOKEN) {
             Log.i(TAG, "REMOVE_TOKEN --- ");
@@ -139,12 +143,10 @@ public class GooglePay {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
                 Log.i(TAG, "REMOVE_TOKEN CANCEL --- ");
-                JSObject result = new JSObject();
                 result.put("isRemoved", false);
                 call.resolve(result);
             } else if (resultCode == RESULT_OK) {
                 Log.i(TAG, "REMOVE_TOKEN SUCCESS --- ");
-                JSObject result = new JSObject();
                 result.put("isRemoved", true);
                 call.resolve(result);
             } else if (resultCode == RESULT_INVALID_TOKEN) {
@@ -159,6 +161,7 @@ public class GooglePay {
             call.resolve();
         }
         this.bridge.releaseCall(callBackId);
+        call.setKeepAlive(false);
     }
 
     public void getEnvironment(PluginCall call) {
@@ -183,6 +186,9 @@ public class GooglePay {
 
     public void createWallet(PluginCall call) {
         try {
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
             this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CREATE_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
@@ -432,7 +438,6 @@ public class GooglePay {
         }
         try {
             this.bridge.saveCall(call);
-            Log.i(TAG, call.getCallbackId());
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
             this.tapAndPay.requestDeleteToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_DELETE_TOKEN);

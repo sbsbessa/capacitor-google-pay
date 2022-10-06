@@ -185,11 +185,11 @@ export interface GooglePayPlugin {
 
   /**
    * returns a list of tokens registered to the active wallet
-   * @return {Promise<{tokens: any[]}>}
+   * @return {Promise<{tokens: string[]}>}
    *
    * @since 1.0.0
    */
-  listTokens(): Promise<{ tokens: any[] }>;
+  listTokens(): Promise<{ tokens: string[] }>;
 
   /**
    *  Starts the push tokenization flow
@@ -217,7 +217,7 @@ export interface GooglePayPlugin {
   /**
    *  Starts the push tokenization flow
    * @param options {GooglePayTokenOptions} Token Options
-   * @return {Promise<any>}
+   * @return {Promise<{ isRemoved: boolean }>}
    *
    * @since 1.0.0
    */
@@ -225,12 +225,11 @@ export interface GooglePayPlugin {
 
   /**
    *  Initializes create wallet
-   * @param options {GooglePayTokenOptions} Token Options
-   * @return {Promise<any>}
+   * @return {Promise<{ isCreated: boolean }>}
    *
    * @since 4.0.1
    */
-  createWallet(): Promise<any>;
+  createWallet(): Promise<{ isCreated: boolean }>;
 
   /**
    * returns the status of a token with a given token ID
