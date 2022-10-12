@@ -301,8 +301,8 @@ public class GooglePay {
 //                                    boolean isSelected = task.getResult().isSelected();
                                     // Next: update payment card UI to reflect token state and selection
                                     JSObject result = new JSObject();
-                                    result.put("code", tokenStateInt);
-                                    result.put("message", GooglePay.TokenStatusReference.getName(tokenStateInt));
+                                    result.put("state", tokenStateInt);
+                                    result.put("code", GooglePay.TokenStatusReference.getName(tokenStateInt));
                                     call.resolve(result);
                                 } else {
                                     ApiException apiException = (ApiException) task.getException();

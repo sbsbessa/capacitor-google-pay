@@ -10,6 +10,16 @@ export enum ErrorCodeReference {
   INVALID_TOKEN = -7
 }
 
+export enum TokenStatusReference {
+  TOKEN_STATE_UNTOKENIZED = 1,
+  TOKEN_STATE_PENDING = 2,
+  TOKEN_STATE_NEEDS_IDENTITY_VERIFICATION = 3,
+  TOKEN_STATE_SUSPENDED = 4,
+  TOKEN_STATE_ACTIVE = 5,
+  TOKEN_STATE_FELICA_PENDING_PROVISIONING = 6,
+  TOKEN_STATE_NOT_FOUND = -1,
+}
+
 export interface GooglePayAddress {
   /**
    * Address name
@@ -181,7 +191,7 @@ export interface GooglePayPlugin {
    *
    * @since 1.0.0
    */
-  getTokenStatus(options: GooglePayTokenOptions): Promise<any>;
+  getTokenStatus(options: GooglePayTokenOptions): Promise<{ state: TokenStatusReference, code: string }>;
 
   /**
    * returns a list of tokens registered to the active wallet

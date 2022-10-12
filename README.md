@@ -38,6 +38,7 @@ npx cap sync
 * [`setGPayAsDefaultNFCApp()`](#setgpayasdefaultnfcapp)
 * [`registerDataChangedListener()`](#registerdatachangedlistener)
 * [Interfaces](#interfaces)
+* [Enums](#enums)
 
 </docgen-index>
 
@@ -337,5 +338,21 @@ returns the status of a token with a given token ID
 | **`countryCode`**        | <code>string</code> | Country code        | 1.0.0 |
 | **`postalCode`**         | <code>string</code> | Postal code         | 1.0.0 |
 | **`phoneNumber`**        | <code>string</code> | Phone number        | 1.0.0 |
+
+
+### Enums
+
+
+#### TokenStatusReference
+
+| Members                                       | Value           |
+| --------------------------------------------- | --------------- |
+| **`TOKEN_STATE_UNTOKENIZED`**                 | <code>1</code>  |
+| **`TOKEN_STATE_PENDING`**                     | <code>2</code>  |
+| **`TOKEN_STATE_NEEDS_IDENTITY_VERIFICATION`** | <code>3</code>  |
+| **`TOKEN_STATE_SUSPENDED`**                   | <code>4</code>  |
+| **`TOKEN_STATE_ACTIVE`**                      | <code>5</code>  |
+| **`TOKEN_STATE_FELICA_PENDING_PROVISIONING`** | <code>6</code>  |
+| **`TOKEN_STATE_NOT_FOUND`**                   | <code>-1</code> |
 
 </docgen-api>
