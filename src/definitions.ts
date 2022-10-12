@@ -7,7 +7,9 @@ export enum ErrorCodeReference {
   CREATE_WALLET_CANCEL = -4,
   IS_TOKENIZED_ERROR = -5,
   REMOVE_TOKEN_ERROR = -6,
-  INVALID_TOKEN = -7
+  INVALID_TOKEN = -7,
+  SELECT_TOKEN_ERROR = -8,
+  SET_DEFAULT_PAYMENTS_ERROR = -9
 }
 
 export enum TokenStatusReference {

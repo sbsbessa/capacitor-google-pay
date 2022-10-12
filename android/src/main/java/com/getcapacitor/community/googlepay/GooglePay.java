@@ -64,8 +64,8 @@ public class GooglePay {
         REMOVE_TOKEN_ERROR(-6),
         INVALID_TOKEN(-7),
         SELECT_TOKEN_ERROR(-8),
-        SET_DEFAULT_PAYMENTS_ERROR(-9)
-        ;
+        SET_DEFAULT_PAYMENTS_ERROR(-9);
+
         private final Integer code;
 
         ErrorCodeReference(Integer code) {
@@ -141,7 +141,7 @@ public class GooglePay {
         } else if (requestCode == REQUEST_CREATE_WALLET) {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
-                call.reject("cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
+                call.reject("Google wallet create cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
             } else if (resultCode == RESULT_OK) {
                 Log.i(TAG, "Google wallet created --- ");
                 result.put("isCreated", true);
@@ -150,7 +150,7 @@ public class GooglePay {
         } else if (requestCode == SET_DEFAULT_PAYMENTS_REQUEST_CODE) {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
-                call.reject("cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
+                call.reject("Default payment set cancelled", ErrorCodeReference.SET_DEFAULT_PAYMENTS_ERROR.getError());
             } else if (resultCode == RESULT_OK) {
                 Log.i(TAG, "Default payment set --- ");
                 result.put("isDefault", true);
@@ -174,7 +174,7 @@ public class GooglePay {
             } else {
                 Log.i(TAG, "REMOVE_TOKEN ERROR --- ");
                 Log.i(TAG, call.toString());
-                call.reject("error", ErrorCodeReference.REMOVE_TOKEN_ERROR.getError());
+                call.reject("REMOVE_TOKEN ERROR", ErrorCodeReference.REMOVE_TOKEN_ERROR.getError());
             }
         } else if (requestCode == REQUEST_CODE_SELECT_TOKEN) {
             Log.i(TAG, "SET_DEFAULT_TOKEN --- ");
@@ -182,7 +182,7 @@ public class GooglePay {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
                 Log.i(TAG, "SET_DEFAULT_TOKEN CANCEL --- ");
-                result.put("isRemoved", false);
+                result.put("isSuccess", false);
                 call.resolve(result);
             } else if (resultCode == RESULT_OK) {
                 Log.i(TAG, "SET_DEFAULT_TOKEN SUCCESS --- ");
@@ -194,7 +194,7 @@ public class GooglePay {
             } else {
                 Log.i(TAG, "SET_DEFAULT_TOKEN ERROR --- ");
                 Log.i(TAG, call.toString());
-                call.reject("error", ErrorCodeReference.SELECT_TOKEN_ERROR.getError());
+                call.reject("SET_DEFAULT_TOKEN ERROR", ErrorCodeReference.SELECT_TOKEN_ERROR.getError());
             }
         } else {
             call.resolve();
@@ -559,6 +559,7 @@ public class GooglePay {
         try {
             this.tapAndPay.registerDataChangedListener(
                     () -> {
+                        Log.i(TAG, call.toString());
                         JSObject result = new JSObject();
                         result.put("value", "OK");
                         assert this.dataChangeListener != null;
