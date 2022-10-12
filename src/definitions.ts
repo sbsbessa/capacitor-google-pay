@@ -215,7 +215,16 @@ export interface GooglePayPlugin {
   pushProvision(options: GooglePayProvisionOptions): Promise<{ tokenId: string }>;
 
   /**
-   *  Starts the push tokenization flow
+   *  Requests setting token as default in Google Pay
+   * @param options {GooglePayTokenOptions} Token Options
+   * @return {Promise<{ isSuccess: boolean }>}
+   *
+   * @since 1.0.0
+   */
+  requestSelectToken(options: GooglePayTokenOptions): Promise<{ isSuccess: boolean }>;
+
+  /**
+   *  Requests deleting token from Google Pay
    * @param options {GooglePayTokenOptions} Token Options
    * @return {Promise<{ isRemoved: boolean }>}
    *
@@ -230,6 +239,22 @@ export interface GooglePayPlugin {
    * @since 4.0.1
    */
   createWallet(): Promise<{ isCreated: boolean }>;
+
+  /**
+   *  Check if Google Pay is Default NFC payment App
+   * @return {Promise<{ isDefault: boolean }>}
+   *
+   * @since 4.0.1
+   */
+  isGPayDefaultNFCApp(): Promise<{ isDefault: boolean }>;
+
+  /**
+   *  Sets Google Pay as Default NFC payment App
+   * @return {Promise<{ isDefault: boolean }>}
+   *
+   * @since 4.0.1
+   */
+  setGPayAsDefaultNFCApp(): Promise<{ isDefault: boolean }>;
 
   /**
    * returns the status of a token with a given token ID

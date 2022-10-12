@@ -3,7 +3,12 @@ package com.getcapacitor.community.googlepay;
 import static com.google.android.gms.tapandpay.TapAndPayStatusCodes.TAP_AND_PAY_NO_ACTIVE_WALLET;
 import static com.google.android.gms.tapandpay.TapAndPayStatusCodes.TAP_AND_PAY_TOKEN_NOT_FOUND;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
+import android.nfc.cardemulation.CardEmulation;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +18,7 @@ import com.getcapacitor.Bridge;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tapandpay.TapAndPay;
 import com.google.android.gms.tapandpay.TapAndPayClient;
@@ -39,9 +45,11 @@ public class GooglePay {
     public String callBackId;
     public String dataChangeCallBackId;
 
-    protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
-    protected static final int REQUEST_CREATE_WALLET = 4;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
+    protected static final int REQUEST_CREATE_WALLET = 1;
+    protected static final int REQUEST_CODE_PUSH_TOKENIZE = 2;
+    protected static final int REQUEST_CODE_SELECT_TOKEN = 3;
+    protected static final int REQUEST_CODE_DELETE_TOKEN = 4;
+    protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 5;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -55,6 +63,8 @@ public class GooglePay {
         IS_TOKENIZED_ERROR(-5),
         REMOVE_TOKEN_ERROR(-6),
         INVALID_TOKEN(-7),
+        SELECT_TOKEN_ERROR(-8),
+        SET_DEFAULT_PAYMENTS_ERROR(-9)
         ;
         private final Integer code;
 
@@ -137,6 +147,15 @@ public class GooglePay {
                 result.put("isCreated", true);
                 call.resolve(result);
             }
+        } else if (requestCode == SET_DEFAULT_PAYMENTS_REQUEST_CODE) {
+            if (resultCode == RESULT_CANCELED) {
+                // The user canceled the request.
+                call.reject("cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
+            } else if (resultCode == RESULT_OK) {
+                Log.i(TAG, "Google wallet created --- ");
+                result.put("isDefault", true);
+                call.resolve(result);
+            }
         } else if (requestCode == REQUEST_CODE_DELETE_TOKEN) {
             Log.i(TAG, "REMOVE_TOKEN --- ");
 
@@ -156,6 +175,26 @@ public class GooglePay {
                 Log.i(TAG, "REMOVE_TOKEN ERROR --- ");
                 Log.i(TAG, call.toString());
                 call.reject("error", ErrorCodeReference.REMOVE_TOKEN_ERROR.getError());
+            }
+        } else if (requestCode == REQUEST_CODE_SELECT_TOKEN) {
+            Log.i(TAG, "SET_DEFAULT_TOKEN --- ");
+
+            if (resultCode == RESULT_CANCELED) {
+                // The user canceled the request.
+                Log.i(TAG, "SET_DEFAULT_TOKEN CANCEL --- ");
+                result.put("isRemoved", false);
+                call.resolve(result);
+            } else if (resultCode == RESULT_OK) {
+                Log.i(TAG, "SET_DEFAULT_TOKEN SUCCESS --- ");
+                result.put("isSuccess", true);
+                call.resolve(result);
+            } else if (resultCode == RESULT_INVALID_TOKEN) {
+                Log.i(TAG, "SET_DEFAULT_TOKEN WRONG TOKEN --- ");
+                call.reject("Invalid TokenReferenceID", ErrorCodeReference.INVALID_TOKEN.getError());
+            } else {
+                Log.i(TAG, "SET_DEFAULT_TOKEN ERROR --- ");
+                Log.i(TAG, call.toString());
+                call.reject("error", ErrorCodeReference.SELECT_TOKEN_ERROR.getError());
             }
         } else {
             call.resolve();
@@ -179,17 +218,6 @@ public class GooglePay {
                                 }
                             }
                     );
-        } catch (Exception e) {
-            call.reject(e.getMessage());
-        }
-    }
-
-    public void createWallet(PluginCall call) {
-        try {
-            this.bridge.saveCall(call);
-            this.callBackId = call.getCallbackId();
-            call.setKeepAlive(true);
-            this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CREATE_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -424,6 +452,28 @@ public class GooglePay {
         }
     }
 
+    public void requestSelectToken(PluginCall call) {
+        Log.i(TAG, "selectToken --- 1");
+        String tokenReferenceId = call.getString("tokenReferenceId");
+        if (tokenReferenceId == null) {
+            call.reject("No tokenReferenceId found");
+            return;
+        }
+        String tsp = call.getString("tsp");
+        if (tsp == null) {
+            call.reject("No tsp found");
+            return;
+        }
+        try {
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
+            this.tapAndPay.requestSelectToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_SELECT_TOKEN);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
     public void requestDeleteToken(PluginCall call) {
         Log.i(TAG, "removeToken --- 1");
         String tokenReferenceId = call.getString("tokenReferenceId");
@@ -441,6 +491,53 @@ public class GooglePay {
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
             this.tapAndPay.requestDeleteToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_DELETE_TOKEN);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    public void createWallet(PluginCall call) {
+        try {
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
+            this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CREATE_WALLET);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    public void isGPayDefaultNFCApp(PluginCall call) {
+        try {
+            NfcManager nfcManager = (NfcManager) this.bridge.getContext().getSystemService(Context.NFC_SERVICE);
+            NfcAdapter adapter = nfcManager.getDefaultAdapter();
+            CardEmulation emulation = CardEmulation.getInstance(adapter);
+            boolean isDefault = emulation.isDefaultServiceForCategory(
+                    new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                            "com.google.android.gms.tapandpay.hce.service.TpHceService"),
+                    CardEmulation.CATEGORY_PAYMENT);
+            JSObject result = new JSObject();
+            result.put("isDefault", isDefault);
+            call.resolve(result);
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    public void setGPayAsDefaultNFCApp(PluginCall call) {
+        try {
+            Intent intent = new Intent(CardEmulation.ACTION_CHANGE_DEFAULT);
+            intent.putExtra(CardEmulation.EXTRA_CATEGORY, CardEmulation.CATEGORY_PAYMENT);
+            intent.putExtra(
+                    CardEmulation.EXTRA_SERVICE_COMPONENT,
+                    new ComponentName(
+                            "com.google.android.gms",
+                            "com.google.android.gms.tapandpay.hce.service.TpHceService"));
+
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
+            this.bridge.startActivityForPluginWithResult(call, intent, SET_DEFAULT_PAYMENTS_REQUEST_CODE);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }

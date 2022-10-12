@@ -64,18 +64,28 @@ public class GooglePayPlugin extends Plugin {
     public void isTokenized(PluginCall call) { implementation.isTokenized(call); }
 
     @PluginMethod
-    public void createWallet(PluginCall call) {
-        implementation.createWallet(call);
-    }
-
-    @PluginMethod
     public void pushProvision(PluginCall call) {
         implementation.pushProvision(call);
     }
 
     @PluginMethod
+    public void requestSelectToken(PluginCall call) {
+        implementation.requestSelectToken(call);
+    }
+
+    @PluginMethod
     public void requestDeleteToken(PluginCall call) {
         implementation.requestDeleteToken(call);
+    }
+
+    @PluginMethod
+    public void isGPayDefaultNFCApp(PluginCall call) {
+        implementation.isGPayDefaultNFCApp(call);
+    }
+
+    @PluginMethod
+    public void setGPayAsDefaultNFCApp(PluginCall call) {
+        implementation.setGPayAsDefaultNFCApp(call);
     }
 
     @PluginMethod
