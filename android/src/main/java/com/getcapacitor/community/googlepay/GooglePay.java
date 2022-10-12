@@ -45,11 +45,11 @@ public class GooglePay {
     public String callBackId;
     public String dataChangeCallBackId;
 
+    protected static final int REQUEST_CODE_CREATE_WALLET = 1;
+    protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 2;
     protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
-    protected static final int REQUEST_CODE_CREATE_WALLET = 4;
-    protected static final int REQUEST_CODE_SELECT_TOKEN = 5;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 6;
-    protected static final int REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET = 7;
+    protected static final int REQUEST_CODE_SELECT_TOKEN = 4;
+    protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -147,7 +147,7 @@ public class GooglePay {
                 result.put("isCreated", true);
                 call.resolve(result);
             }
-        } else if (requestCode == REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET) {
+        } else if (requestCode == SET_DEFAULT_PAYMENTS_REQUEST_CODE) {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
                 call.reject("Default payment set cancelled", ErrorCodeReference.SET_DEFAULT_PAYMENTS_ERROR.getError());
@@ -549,7 +549,7 @@ public class GooglePay {
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
-            this.bridge.startActivityForPluginWithResult(call, intent, REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET);
+            this.bridge.startActivityForPluginWithResult(call, intent, SET_DEFAULT_PAYMENTS_REQUEST_CODE);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
