@@ -242,11 +242,11 @@ export interface GooglePayPlugin {
 
   /**
    *  Check if Google Pay is Default NFC payment App
-   * @return {Promise<{ isDefault: boolean, isOn: boolean }>}
+   * @return {Promise<{ isDefault: boolean, isNFCOn: boolean }>}
    *
    * @since 4.0.4
    */
-  isGPayDefaultNFCApp(): Promise<{ isDefault: boolean, isOn: boolean }>;
+  isGPayDefaultNFCApp(): Promise<{ isDefault: boolean, isNFCOn: boolean }>;
 
   /**
    *  Sets Google Pay as Default NFC payment App

@@ -520,11 +520,11 @@ public class GooglePay {
                                     "com.google.android.gms.tapandpay.hce.service.TpHceService"),
                             CardEmulation.CATEGORY_PAYMENT);
                     result.put("isDefault", isDefault);
-                    result.put("isOn", true);
+                    result.put("isNFCOn", true);
                     call.resolve(result);
                 } else {
                     result.put("isDefault", false);
-                    result.put("isOn", false);
+                    result.put("isNFCOn", false);
                     call.resolve(result);
                 }
             } else {
