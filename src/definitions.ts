@@ -244,7 +244,7 @@ export interface GooglePayPlugin {
    *  Check if Google Pay is Default NFC payment App
    * @return {Promise<{ isDefault: boolean }>}
    *
-   * @since 4.0.1
+   * @since 4.0.4
    */
   isGPayDefaultNFCApp(): Promise<{ isDefault: boolean }>;
 
@@ -252,7 +252,7 @@ export interface GooglePayPlugin {
    *  Sets Google Pay as Default NFC payment App
    * @return {Promise<{ isDefault: boolean }>}
    *
-   * @since 4.0.1
+   * @since 4.0.4
    */
   setGPayAsDefaultNFCApp(): Promise<{ isDefault: boolean }>;
 

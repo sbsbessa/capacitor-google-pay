@@ -45,11 +45,11 @@ public class GooglePay {
     public String callBackId;
     public String dataChangeCallBackId;
 
-    protected static final int REQUEST_CREATE_WALLET = 1;
-    protected static final int REQUEST_CODE_PUSH_TOKENIZE = 2;
-    protected static final int REQUEST_CODE_SELECT_TOKEN = 3;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 4;
-    protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 5;
+    protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
+    protected static final int REQUEST_CREATE_WALLET = 4;
+    protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
+    protected static final int REQUEST_CODE_SELECT_TOKEN = 6;
+    protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 7;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -152,7 +152,7 @@ public class GooglePay {
                 // The user canceled the request.
                 call.reject("cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
             } else if (resultCode == RESULT_OK) {
-                Log.i(TAG, "Google wallet created --- ");
+                Log.i(TAG, "Default payment set --- ");
                 result.put("isDefault", true);
                 call.resolve(result);
             }
@@ -511,14 +511,16 @@ public class GooglePay {
         try {
             NfcManager nfcManager = (NfcManager) this.bridge.getContext().getSystemService(Context.NFC_SERVICE);
             NfcAdapter adapter = nfcManager.getDefaultAdapter();
-            CardEmulation emulation = CardEmulation.getInstance(adapter);
-            boolean isDefault = emulation.isDefaultServiceForCategory(
-                    new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                            "com.google.android.gms.tapandpay.hce.service.TpHceService"),
-                    CardEmulation.CATEGORY_PAYMENT);
-            JSObject result = new JSObject();
-            result.put("isDefault", isDefault);
-            call.resolve(result);
+            if (adapter != null && adapter.isEnabled()) {
+                CardEmulation emulation = CardEmulation.getInstance(adapter);
+                boolean isDefault = emulation.isDefaultServiceForCategory(
+                        new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                                "com.google.android.gms.tapandpay.hce.service.TpHceService"),
+                        CardEmulation.CATEGORY_PAYMENT);
+                JSObject result = new JSObject();
+                result.put("isDefault", isDefault);
+                call.resolve(result);
+            }
         } catch (Exception e) {
             call.reject(e.getMessage());
         }

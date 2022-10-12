@@ -253,7 +253,7 @@ Check if Google Pay is Default NFC payment App
 
 **Returns:** <code>any</code>
 
-**Since:** 4.0.1
+**Since:** 4.0.4
 
 --------------------
 
@@ -268,7 +268,7 @@ Sets Google Pay as Default NFC payment App
 
 **Returns:** <code>any</code>
 
-**Since:** 4.0.1
+**Since:** 4.0.4
 
 --------------------
 
