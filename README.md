@@ -27,13 +27,13 @@ npx cap sync
 * [`getEnvironment()`](#getenvironment)
 * [`getStableHardwareId()`](#getstablehardwareid)
 * [`getActiveWalletID()`](#getactivewalletid)
+* [`createWallet()`](#createwallet)
 * [`getTokenStatus(...)`](#gettokenstatus)
 * [`listTokens()`](#listtokens)
 * [`isTokenized(...)`](#istokenized)
 * [`pushProvision(...)`](#pushprovision)
 * [`requestSelectToken(...)`](#requestselecttoken)
 * [`requestDeleteToken(...)`](#requestdeletetoken)
-* [`createWallet()`](#createwallet)
 * [`isGPayDefaultNFCApp()`](#isgpaydefaultnfcapp)
 * [`setGPayAsDefaultNFCApp()`](#setgpayasdefaultnfcapp)
 * [`registerDataChangedListener()`](#registerdatachangedlistener)
@@ -115,6 +115,21 @@ returns the ID of the active wallet
 **Returns:** <code>any</code>
 
 **Since:** 1.0.0
+
+--------------------
+
+
+### createWallet()
+
+```typescript
+createWallet() => any
+```
+
+Initializes create wallet
+
+**Returns:** <code>any</code>
+
+**Since:** 4.0.1
 
 --------------------
 
@@ -225,21 +240,6 @@ Requests deleting token from Google Pay
 **Returns:** <code>any</code>
 
 **Since:** 1.0.0
-
---------------------
-
-
-### createWallet()
-
-```typescript
-createWallet() => any
-```
-
-Initializes create wallet
-
-**Returns:** <code>any</code>
-
-**Since:** 4.0.1
 
 --------------------
 

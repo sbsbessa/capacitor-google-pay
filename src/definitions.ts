@@ -187,6 +187,14 @@ export interface GooglePayPlugin {
   getActiveWalletID(): Promise<{ walletId: string }>;
 
   /**
+   *  Initializes create wallet
+   * @return {Promise<{ isCreated: boolean }>}
+   *
+   * @since 4.0.1
+   */
+  createWallet(): Promise<{ isCreated: boolean }>;
+
+  /**
    * returns the status of a token with a given token ID
    * @param options {GooglePayTokenOptions} Token Options
    * @return {Promise<any>}
@@ -243,14 +251,6 @@ export interface GooglePayPlugin {
    * @since 1.0.0
    */
   requestDeleteToken(options: GooglePayTokenOptions): Promise<{ isRemoved: boolean }>;
-
-  /**
-   *  Initializes create wallet
-   * @return {Promise<{ isCreated: boolean }>}
-   *
-   * @since 4.0.1
-   */
-  createWallet(): Promise<{ isCreated: boolean }>;
 
   /**
    *  Check if Google Pay is Default NFC payment App

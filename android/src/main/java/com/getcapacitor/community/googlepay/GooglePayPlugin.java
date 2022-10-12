@@ -51,6 +51,11 @@ public class GooglePayPlugin extends Plugin {
     }
 
     @PluginMethod
+    public void createWallet(PluginCall call) {
+        implementation.createWallet(call);
+    }
+
+    @PluginMethod
     public void getTokenStatus(PluginCall call) {
         implementation.getTokenStatus(call);
     }

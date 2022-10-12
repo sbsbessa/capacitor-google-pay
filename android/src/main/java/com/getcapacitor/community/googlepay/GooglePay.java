@@ -46,10 +46,10 @@ public class GooglePay {
     public String dataChangeCallBackId;
 
     protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
-    protected static final int REQUEST_CREATE_WALLET = 4;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
-    protected static final int REQUEST_CODE_SELECT_TOKEN = 6;
-    protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 7;
+    protected static final int REQUEST_CODE_CREATE_WALLET = 4;
+    protected static final int REQUEST_CODE_SELECT_TOKEN = 5;
+    protected static final int REQUEST_CODE_DELETE_TOKEN = 6;
+    protected static final int REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET = 7;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -138,7 +138,7 @@ public class GooglePay {
                 result.put("tokenId", tokenId);
                 call.resolve(result);
             }
-        } else if (requestCode == REQUEST_CREATE_WALLET) {
+        } else if (requestCode == REQUEST_CODE_CREATE_WALLET) {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
                 call.reject("Google wallet create cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
@@ -147,7 +147,7 @@ public class GooglePay {
                 result.put("isCreated", true);
                 call.resolve(result);
             }
-        } else if (requestCode == SET_DEFAULT_PAYMENTS_REQUEST_CODE) {
+        } else if (requestCode == REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET) {
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
                 call.reject("Default payment set cancelled", ErrorCodeReference.SET_DEFAULT_PAYMENTS_ERROR.getError());
@@ -271,6 +271,17 @@ public class GooglePay {
                                 }
                             }
                     );
+        } catch (Exception e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    public void createWallet(PluginCall call) {
+        try {
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
+            this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CODE_CREATE_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -468,6 +479,7 @@ public class GooglePay {
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
+            Log.i(TAG, "selectToken --- 2");
             this.tapAndPay.requestSelectToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_SELECT_TOKEN);
         } catch (Exception e) {
             call.reject(e.getMessage());
@@ -491,17 +503,6 @@ public class GooglePay {
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
             this.tapAndPay.requestDeleteToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_DELETE_TOKEN);
-        } catch (Exception e) {
-            call.reject(e.getMessage());
-        }
-    }
-
-    public void createWallet(PluginCall call) {
-        try {
-            this.bridge.saveCall(call);
-            this.callBackId = call.getCallbackId();
-            call.setKeepAlive(true);
-            this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CREATE_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -548,7 +549,7 @@ public class GooglePay {
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
-            this.bridge.startActivityForPluginWithResult(call, intent, SET_DEFAULT_PAYMENTS_REQUEST_CODE);
+            this.bridge.startActivityForPluginWithResult(call, intent, REQUEST_CODE_SET_DEFAULT_PAYMENT_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
