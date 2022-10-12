@@ -511,15 +511,24 @@ public class GooglePay {
         try {
             NfcManager nfcManager = (NfcManager) this.bridge.getContext().getSystemService(Context.NFC_SERVICE);
             NfcAdapter adapter = nfcManager.getDefaultAdapter();
-            if (adapter != null && adapter.isEnabled()) {
-                CardEmulation emulation = CardEmulation.getInstance(adapter);
-                boolean isDefault = emulation.isDefaultServiceForCategory(
-                        new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                                "com.google.android.gms.tapandpay.hce.service.TpHceService"),
-                        CardEmulation.CATEGORY_PAYMENT);
+            if (adapter != null) {
                 JSObject result = new JSObject();
-                result.put("isDefault", isDefault);
-                call.resolve(result);
+                if(adapter.isEnabled()) {
+                    CardEmulation emulation = CardEmulation.getInstance(adapter);
+                    boolean isDefault = emulation.isDefaultServiceForCategory(
+                            new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                                    "com.google.android.gms.tapandpay.hce.service.TpHceService"),
+                            CardEmulation.CATEGORY_PAYMENT);
+                    result.put("isDefault", isDefault);
+                    result.put("isOn", true);
+                    call.resolve(result);
+                } else {
+                    result.put("isDefault", false);
+                    result.put("isOn", false);
+                    call.resolve(result);
+                }
+            } else {
+                call.reject("NFC is not supported", "NFC_SERVICE_NOT_SUPPORTED");
             }
         } catch (Exception e) {
             call.reject(e.getMessage());
