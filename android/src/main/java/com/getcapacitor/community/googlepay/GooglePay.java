@@ -45,11 +45,11 @@ public class GooglePay {
     public String callBackId;
     public String dataChangeCallBackId;
 
-    protected static final int REQUEST_CODE_CREATE_WALLET = 1;
     protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 2;
     protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
-    protected static final int REQUEST_CODE_SELECT_TOKEN = 4;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
+    protected static final int REQUEST_CODE_CREATE_WALLET = 4;
+    protected static final int REQUEST_CODE_SELECT_TOKEN = 5;
+    protected static final int REQUEST_CODE_DELETE_TOKEN = 6;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -129,22 +129,22 @@ public class GooglePay {
         JSObject ret = new JSObject();
         JSObject result = new JSObject();
 
-        if (requestCode == REQUEST_CODE_PUSH_TOKENIZE) {
+        if (requestCode == REQUEST_CODE_CREATE_WALLET) {
+            if (resultCode == RESULT_CANCELED) {
+                // The user canceled the request.
+                call.reject("Google wallet create cancelled", ErrorCodeReference.CREATE_WALLET_CANCEL.getError());
+            } else if (resultCode == RESULT_OK) {
+                Log.i(TAG, "Google wallet created --- ");
+                result.put("isCreated", true);
+                call.resolve(result);
+            }
+        } else if (requestCode == REQUEST_CODE_PUSH_TOKENIZE) {
             if (resultCode == RESULT_CANCELED) {
                 call.reject("PUSH_PROVISION_CANCEL", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
             } else if (resultCode == RESULT_OK) {
                 // The action succeeded.
                 String tokenId = data.getStringExtra(TapAndPay.EXTRA_ISSUER_TOKEN_ID);
                 result.put("tokenId", tokenId);
-                call.resolve(result);
-            }
-        } else if (requestCode == REQUEST_CODE_CREATE_WALLET) {
-            if (resultCode == RESULT_CANCELED) {
-                // The user canceled the request.
-                call.reject("Google wallet create cancelled", ErrorCodeReference.PUSH_PROVISION_CANCEL.getError());
-            } else if (resultCode == RESULT_OK) {
-                Log.i(TAG, "Google wallet created --- ");
-                result.put("isCreated", true);
                 call.resolve(result);
             }
         } else if (requestCode == SET_DEFAULT_PAYMENTS_REQUEST_CODE) {
@@ -281,7 +281,7 @@ public class GooglePay {
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
-            this.tapAndPay.createWallet(bridge.getActivity(), REQUEST_CODE_CREATE_WALLET);
+            tapAndPay.createWallet(bridge.getActivity(), REQUEST_CODE_CREATE_WALLET);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
