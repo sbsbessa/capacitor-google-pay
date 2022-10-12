@@ -31,8 +31,11 @@ npx cap sync
 * [`listTokens()`](#listtokens)
 * [`isTokenized(...)`](#istokenized)
 * [`pushProvision(...)`](#pushprovision)
+* [`requestSelectToken(...)`](#requestselecttoken)
 * [`requestDeleteToken(...)`](#requestdeletetoken)
 * [`createWallet()`](#createwallet)
+* [`isGPayDefaultNFCApp()`](#isgpaydefaultnfcapp)
+* [`setGPayAsDefaultNFCApp()`](#setgpayasdefaultnfcapp)
 * [`registerDataChangedListener()`](#registerdatachangedlistener)
 * [Interfaces](#interfaces)
 
@@ -187,13 +190,32 @@ Starts the push tokenization flow
 --------------------
 
 
+### requestSelectToken(...)
+
+```typescript
+requestSelectToken(options: GooglePayTokenOptions) => any
+```
+
+Requests setting token as default in Google Pay
+
+| Param         | Type                                                                    | Description   |
+| ------------- | ----------------------------------------------------------------------- | ------------- |
+| **`options`** | <code><a href="#googlepaytokenoptions">GooglePayTokenOptions</a></code> | Token Options |
+
+**Returns:** <code>any</code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
 ### requestDeleteToken(...)
 
 ```typescript
 requestDeleteToken(options: GooglePayTokenOptions) => any
 ```
 
-Starts the push tokenization flow
+Requests deleting token from Google Pay
 
 | Param         | Type                                                                    | Description   |
 | ------------- | ----------------------------------------------------------------------- | ------------- |
@@ -213,6 +235,36 @@ createWallet() => any
 ```
 
 Initializes create wallet
+
+**Returns:** <code>any</code>
+
+**Since:** 4.0.1
+
+--------------------
+
+
+### isGPayDefaultNFCApp()
+
+```typescript
+isGPayDefaultNFCApp() => any
+```
+
+Check if Google Pay is Default NFC payment App
+
+**Returns:** <code>any</code>
+
+**Since:** 4.0.1
+
+--------------------
+
+
+### setGPayAsDefaultNFCApp()
+
+```typescript
+setGPayAsDefaultNFCApp() => any
+```
+
+Sets Google Pay as Default NFC payment App
 
 **Returns:** <code>any</code>
 
