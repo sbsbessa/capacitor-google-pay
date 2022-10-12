@@ -239,7 +239,7 @@ Requests deleting token from Google Pay
 
 **Returns:** <code>any</code>
 
-**Since:** 1.0.0
+**Since:** 4.0.13
 
 --------------------
 

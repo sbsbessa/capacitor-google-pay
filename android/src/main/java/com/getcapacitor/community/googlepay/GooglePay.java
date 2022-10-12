@@ -48,8 +48,7 @@ public class GooglePay {
     protected static final int SET_DEFAULT_PAYMENTS_REQUEST_CODE = 2;
     protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
     protected static final int REQUEST_CODE_CREATE_WALLET = 4;
-    protected static final int REQUEST_CODE_SELECT_TOKEN = 5;
-    protected static final int REQUEST_CODE_DELETE_TOKEN = 6;
+    protected static final int REQUEST_CODE_ACTION_TOKEN = 5;
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
@@ -61,9 +60,8 @@ public class GooglePay {
         MISSING_DATA_ERROR(-3),
         CREATE_WALLET_CANCEL(-4),
         IS_TOKENIZED_ERROR(-5),
-        REMOVE_TOKEN_ERROR(-6),
+        ACTION_TOKEN_ERROR(-6),
         INVALID_TOKEN(-7),
-        SELECT_TOKEN_ERROR(-8),
         SET_DEFAULT_PAYMENTS_ERROR(-9);
 
         private final Integer code;
@@ -156,45 +154,25 @@ public class GooglePay {
                 result.put("isDefault", true);
                 call.resolve(result);
             }
-        } else if (requestCode == REQUEST_CODE_DELETE_TOKEN) {
-            Log.i(TAG, "REMOVE_TOKEN --- ");
+        } else if (requestCode == REQUEST_CODE_ACTION_TOKEN) {
+            Log.i(TAG, "ACTION_TOKEN --- ");
 
             if (resultCode == RESULT_CANCELED) {
                 // The user canceled the request.
-                Log.i(TAG, "REMOVE_TOKEN CANCEL --- ");
-                result.put("isRemoved", false);
-                call.resolve(result);
-            } else if (resultCode == RESULT_OK) {
-                Log.i(TAG, "REMOVE_TOKEN SUCCESS --- ");
-                result.put("isRemoved", true);
-                call.resolve(result);
-            } else if (resultCode == RESULT_INVALID_TOKEN) {
-                Log.i(TAG, "REMOVE_TOKEN WRONG TOKEN --- ");
-                call.reject("Invalid TokenReferenceID", ErrorCodeReference.INVALID_TOKEN.getError());
-            } else {
-                Log.i(TAG, "REMOVE_TOKEN ERROR --- ");
-                Log.i(TAG, call.toString());
-                call.reject("REMOVE_TOKEN ERROR", ErrorCodeReference.REMOVE_TOKEN_ERROR.getError());
-            }
-        } else if (requestCode == REQUEST_CODE_SELECT_TOKEN) {
-            Log.i(TAG, "SET_DEFAULT_TOKEN --- ");
-
-            if (resultCode == RESULT_CANCELED) {
-                // The user canceled the request.
-                Log.i(TAG, "SET_DEFAULT_TOKEN CANCEL --- ");
+                Log.i(TAG, "ACTION_TOKEN CANCEL --- ");
                 result.put("isSuccess", false);
                 call.resolve(result);
             } else if (resultCode == RESULT_OK) {
-                Log.i(TAG, "SET_DEFAULT_TOKEN SUCCESS --- ");
+                Log.i(TAG, "ACTION_TOKEN SUCCESS --- ");
                 result.put("isSuccess", true);
                 call.resolve(result);
             } else if (resultCode == RESULT_INVALID_TOKEN) {
-                Log.i(TAG, "SET_DEFAULT_TOKEN WRONG TOKEN --- ");
+                Log.i(TAG, "ACTION_TOKEN WRONG TOKEN --- ");
                 call.reject("Invalid TokenReferenceID", ErrorCodeReference.INVALID_TOKEN.getError());
             } else {
-                Log.i(TAG, "SET_DEFAULT_TOKEN ERROR --- ");
+                Log.i(TAG, "ACTION_TOKEN ERROR --- ");
                 Log.i(TAG, call.toString());
-                call.reject("SET_DEFAULT_TOKEN ERROR", ErrorCodeReference.SELECT_TOKEN_ERROR.getError());
+                call.reject("ACTION_TOKEN ERROR", ErrorCodeReference.ACTION_TOKEN_ERROR.getError());
             }
         } else {
             call.resolve();
@@ -480,7 +458,7 @@ public class GooglePay {
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
             Log.i(TAG, "selectToken --- 2");
-            this.tapAndPay.requestSelectToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_SELECT_TOKEN);
+            this.tapAndPay.requestSelectToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_ACTION_TOKEN);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -502,7 +480,8 @@ public class GooglePay {
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
-            this.tapAndPay.requestDeleteToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_DELETE_TOKEN);
+            Log.i(TAG, "removeToken --- 2");
+            this.tapAndPay.requestDeleteToken(bridge.getActivity(), tokenReferenceId, getTSP(tsp), REQUEST_CODE_ACTION_TOKEN);
         } catch (Exception e) {
             call.reject(e.getMessage());
         }

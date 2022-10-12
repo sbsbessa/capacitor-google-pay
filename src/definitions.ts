@@ -246,11 +246,11 @@ export interface GooglePayPlugin {
   /**
    *  Requests deleting token from Google Pay
    * @param options {GooglePayTokenOptions} Token Options
-   * @return {Promise<{ isRemoved: boolean }>}
+   * @return {Promise<{ isSuccess: boolean }>}
    *
-   * @since 1.0.0
+   * @since 4.0.13
    */
-  requestDeleteToken(options: GooglePayTokenOptions): Promise<{ isRemoved: boolean }>;
+  requestDeleteToken(options: GooglePayTokenOptions): Promise<{ isSuccess: boolean }>;
 
   /**
    *  Check if Google Pay is Default NFC payment App
