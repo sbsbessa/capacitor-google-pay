@@ -1,6 +1,6 @@
 {
   "name": "capacitor-google-pay",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Google Pay In-App Provisioning",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -41,8 +41,8 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "latest",
-    "@capacitor/core": "latest",
+    "@capacitor/android": "5.0.0",
+    "@capacitor/core": "^5.0.0",
     "@capacitor/docgen": "^0.2.0",
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^2.0.0",
@@ -56,11 +56,10 @@
     "rimraf": "^3.0.2",
     "rollup": "^3.7.5",
     "swiftlint": "^1.0.1",
-    "tslib": "^2.5.0",
     "typescript": "~4.8.4"
   },
   "peerDependencies": {
-    "@capacitor/core": "latest"
+    "@capacitor/core": "5.0.0"
   },
   "prettier": "@ionic/prettier-config",
   "eslintConfig": {
@@ -70,10 +69,6 @@
     "android": {
       "src": "android"
     }
-  },
-  "dependencies": {
-    "@capacitor/plugin-migration-v4-to-v5": "^0.0.9",
-    "tslib": "^2.5.0"
   },
   "type": "module"
 }

@@ -8,6 +8,7 @@ ext {
 buildscript {
     repositories {
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.0'
@@ -47,8 +48,9 @@ def sdkDir = properties.getProperty('sdk.dir')
 
 repositories {
     google()
-    mavenCentral()
-    maven { url "$sdkDir/extras/google/m2repository"}
+    maven {
+        url "$sdkDir/extras/google/m2repository"
+    }
 }
 
 
@@ -60,6 +62,6 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
 
-    implementation 'com.google.android.gms:play-services-tapandpay:18.2.0'
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation 'com.google.android.gms:play-services-tapandpay:18.3.2'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
 }
