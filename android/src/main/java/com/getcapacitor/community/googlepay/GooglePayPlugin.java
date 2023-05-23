@@ -2,7 +2,6 @@ package com.getcapacitor.community.googlepay;
 
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -21,7 +20,6 @@ public class GooglePayPlugin extends Plugin {
     protected static final int REQUEST_CODE_PUSH_TOKENIZE = 3;
     protected static final int REQUEST_CREATE_WALLET = 4;
     protected static final int REQUEST_CODE_DELETE_TOKEN = 5;
-    protected static final int RESULT_CANCELED = 0;
 
     @Override
     public void load() {

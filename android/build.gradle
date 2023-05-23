@@ -11,7 +11,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.0'
+        classpath 'com.android.tools.build:gradle:8.0.1'
     }
 }
 
@@ -47,6 +47,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 def sdkDir = properties.getProperty('sdk.dir')
 
 repositories {
+    gradlePluginPortal()
     google()
     maven {
         url "$sdkDir/extras/google/m2repository"
