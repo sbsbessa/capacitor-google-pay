@@ -48,7 +48,7 @@ npx cap sync
 ### addListener('registerDataChangedListener', ...)
 
 ```typescript
-addListener(eventName: 'registerDataChangedListener', listenerFunc: (response: any) => void) => PluginListenerHandle
+addListener(eventName: 'registerDataChangedListener', listenerFunc: (response: any) => void) => any
 ```
 
 Event called when an action is performed on a pusn notification.
@@ -58,7 +58,7 @@ Event called when an action is performed on a pusn notification.
 | **`eventName`**    | <code>'registerDataChangedListener'</code> | pushNotificationActionPerformed.       |
 | **`listenerFunc`** | <code>(response: any) =&gt; void</code>    | callback with the notification action. |
 
-**Returns:** <code><a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>any</code>
 
 **Since:** 1.0.0
 
@@ -290,13 +290,6 @@ returns the status of a token with a given token ID
 
 
 ### Interfaces
-
-
-#### PluginListenerHandle
-
-| Prop         | Type                      |
-| ------------ | ------------------------- |
-| **`remove`** | <code>() =&gt; any</code> |
 
 
 #### GooglePayTokenOptions

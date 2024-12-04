@@ -1,5 +1,3 @@
-import type { PluginListenerHandle } from '@capacitor/core';
-
 export enum ErrorCodeReference {
   PUSH_PROVISION_ERROR = -1,
   PUSH_PROVISION_CANCEL = -2,
@@ -9,7 +7,7 @@ export enum ErrorCodeReference {
   REMOVE_TOKEN_ERROR = -6,
   INVALID_TOKEN = -7,
   SELECT_TOKEN_ERROR = -8,
-  SET_DEFAULT_PAYMENTS_ERROR = -9
+  SET_DEFAULT_PAYMENTS_ERROR = -9,
 }
 
 export enum TokenStatusReference {
@@ -79,7 +77,6 @@ export interface GooglePayAddress {
    */
   phoneNumber: string;
 }
-
 
 export interface GooglePayProvisionOptions {
   /**
@@ -158,7 +155,7 @@ export interface GooglePayPlugin {
    *
    * @since 1.0.0
    */
-  addListener(eventName: 'registerDataChangedListener', listenerFunc: (response: any) => void): PluginListenerHandle;
+  addListener(eventName: 'registerDataChangedListener', listenerFunc: (response: any) => void): any;
 
   removeAllListeners(): void;
 
@@ -201,7 +198,7 @@ export interface GooglePayPlugin {
    *
    * @since 1.0.0
    */
-  getTokenStatus(options: GooglePayTokenOptions): Promise<{ state: TokenStatusReference, code: string }>;
+  getTokenStatus(options: GooglePayTokenOptions): Promise<{ state: TokenStatusReference; code: string }>;
 
   /**
    * returns a list of tokens registered to the active wallet
@@ -258,7 +255,7 @@ export interface GooglePayPlugin {
    *
    * @since 4.0.4
    */
-  isGPayDefaultNFCApp(): Promise<{ isDefault: boolean, isNFCOn: boolean }>;
+  isGPayDefaultNFCApp(): Promise<{ isDefault: boolean; isNFCOn: boolean }>;
 
   /**
    *  Sets Google Pay as Default NFC payment App
