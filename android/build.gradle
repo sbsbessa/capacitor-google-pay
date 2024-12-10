@@ -42,16 +42,16 @@ android {
     }
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def sdkDir = properties.getProperty('sdk.dir')
+// Properties properties = new Properties()
+// properties.load(project.rootProject.file('local.properties').newDataInputStream())
+// def sdkDir = properties.getProperty('sdk.dir')
 
 repositories {
     gradlePluginPortal()
     google()
-    maven {
-        url "$sdkDir/extras/google/m2repository"
-    }
+    // maven {
+    //     url "$sdkDir/extras/google/m2repository"
+    // }
 }
 
 
