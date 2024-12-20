@@ -443,12 +443,12 @@ public class GooglePay {
         String tsp = call.getString("tsp");
 
         if (tokenReferenceId == null || tokenReferenceId.isEmpty()) {
-            call.reject("Se requiere tokenReferenceId");
+            call.reject("No tokenReferenceId found");
             return;
         }
 
         if (tsp == null || tsp.isEmpty()) {
-            call.reject("Se requiere tsp");
+            call.reject("No tsp found");
             return;
         }
 
@@ -460,47 +460,13 @@ public class GooglePay {
             tapAndPay.tokenize(
                 bridge.getActivity(),
                 tokenReferenceId,
-                getTSP(tsp), // Pasamos el TSP aquí
-                "MyCard DisplayName",
-                getCardNetwork(tsp), // cardNetwork (puede ser null según la documentación)
-                REQUEST_CODE_ACTION_TOKEN // Usamos el mismo request code que para requestSelectToken y requestDeleteToken
+                getTSP(tsp),
+                "Cocos Card",
+                getCardNetwork(tsp),
+                REQUEST_CODE_ACTION_TOKEN
             );
-            // task.addOnCompleteListener(task1 -> {
-            //     if (task1.isSuccessful()) {
-            //         TokenizationResult result = task1.getResult();
-            //         JSObject ret = new JSObject();
-            //         if (result != null) {
-            //             ret.put("isSuccess", true);
-            //             ret.put("tokenId", result.getToken()); // Agrega el token al resultado
-            //         } else {
-            //             ret.put("isSuccess", true); // Aunque result sea null, consideramos éxito.
-            //             Log.w(
-            //                 TAG,
-            //                 "TokenizationResult is null but task is successful. This may indicate a successful resumption without new token data."
-            //             );
-            //         }
-            //         call.resolve(ret);
-            //     } else {
-            //         Exception exception = task1.getException();
-            //         String errorMessage = "Error al reanudar la tokenización";
-            //         String errorCode = ErrorCodeReference.ACTION_TOKEN_ERROR.getError();
-
-            //         if (exception instanceof ApiException apiException) {
-            //             errorMessage = apiException.getMessage();
-            //             errorCode = String.valueOf(apiException.getStatusCode()); // Usa el código de estado de la API como código de error
-            //         } else if (exception != null) {
-            //             errorMessage = exception.getMessage();
-            //         }
-            //         call.reject(errorMessage, errorCode);
-            //     }
-            //     this.bridge.releaseCall(callBackId);
-            //     call.setKeepAlive(false);
-            // });
         } catch (Exception e) {
-            call.reject(
-                "Error al iniciar la reanudación de la tokenización: " + e.getMessage(),
-                ErrorCodeReference.ACTION_TOKEN_ERROR.getError()
-            );
+            call.reject("Error resuming tokenization: " + e.getMessage(), ErrorCodeReference.ACTION_TOKEN_ERROR.getError());
         }
     }
 
