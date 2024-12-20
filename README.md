@@ -32,6 +32,7 @@ npx cap sync
 * [`listTokens()`](#listtokens)
 * [`isTokenized(...)`](#istokenized)
 * [`pushProvision(...)`](#pushprovision)
+* [`resumeTokenization(...)`](#resumetokenization)
 * [`requestSelectToken(...)`](#requestselecttoken)
 * [`requestDeleteToken(...)`](#requestdeletetoken)
 * [`isGPayDefaultNFCApp()`](#isgpaydefaultnfcapp)
@@ -198,6 +199,25 @@ Starts the push tokenization flow
 | Param         | Type                                                                            |
 | ------------- | ------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#googlepayprovisionoptions">GooglePayProvisionOptions</a></code> |
+
+**Returns:** <code>any</code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### resumeTokenization(...)
+
+```typescript
+resumeTokenization(options: GooglePayTokenOptions) => any
+```
+
+Requests setting token as default in Google Pay
+
+| Param         | Type                                                                    | Description   |
+| ------------- | ----------------------------------------------------------------------- | ------------- |
+| **`options`** | <code><a href="#googlepaytokenoptions">GooglePayTokenOptions</a></code> | Token Options |
 
 **Returns:** <code>any</code>
 
