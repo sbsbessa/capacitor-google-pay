@@ -11,12 +11,10 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.nfc.cardemulation.CardEmulation;
 import android.util.Log;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.getcapacitor.Bridge;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -29,12 +27,11 @@ import com.google.android.gms.tapandpay.issuer.IsTokenizedRequest;
 import com.google.android.gms.tapandpay.issuer.PushTokenizeRequest;
 import com.google.android.gms.tapandpay.issuer.TokenInfo;
 import com.google.android.gms.tapandpay.issuer.UserAddress;
-
+import java.util.Objects;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
 public class GooglePay {
+
     /**
      * Interface for callbacks when network status changes.
      */
@@ -53,7 +50,6 @@ public class GooglePay {
     protected static final int RESULT_CANCELED = 0;
     protected static final int RESULT_OK = -1;
     protected static final int RESULT_INVALID_TOKEN = 15003;
-
 
     public enum ErrorCodeReference {
         PUSH_PROVISION_ERROR(-1),
@@ -174,21 +170,18 @@ public class GooglePay {
 
     public void getEnvironment(PluginCall call) {
         try {
-            this.tapAndPay
-                    .getEnvironment()
-                    .addOnCompleteListener(
-                            task -> {
-                                Log.i(TAG, "onComplete (getEnvironment) - " + task.isSuccessful());
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "getEnvironment: " + task.getResult());
-                                    JSObject result = new JSObject();
-                                    result.put("value", task.getResult());
-                                    call.resolve(result);
-                                } else {
-                                    call.reject("Environment not found", "ENV_ERROR");
-                                }
-                            }
-                    );
+            this.tapAndPay.getEnvironment()
+                .addOnCompleteListener(task -> {
+                    Log.i(TAG, "onComplete (getEnvironment) - " + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "getEnvironment: " + task.getResult());
+                        JSObject result = new JSObject();
+                        result.put("value", task.getResult());
+                        call.resolve(result);
+                    } else {
+                        call.reject("Environment not found", "ENV_ERROR");
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -197,25 +190,23 @@ public class GooglePay {
     public void getStableHardwareId(PluginCall call) {
         try {
             this.tapAndPay.getStableHardwareId()
-                    .addOnCompleteListener(
-                            task -> {
-                                Log.i(TAG, "onComplete (getStableHardwareId) - " + task.isSuccessful());
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "getStableHardwareId: " + task.getResult());
-                                    JSObject result = new JSObject();
-                                    result.put("hardwareId", task.getResult());
-                                    call.resolve(result);
-                                } else {
-                                    Exception exception = task.getException();
+                .addOnCompleteListener(task -> {
+                    Log.i(TAG, "onComplete (getStableHardwareId) - " + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "getStableHardwareId: " + task.getResult());
+                        JSObject result = new JSObject();
+                        result.put("hardwareId", task.getResult());
+                        call.resolve(result);
+                    } else {
+                        Exception exception = task.getException();
 
-                                    if (exception instanceof ApiException apiException) {
-                                        call.reject(apiException.getMessage());
-                                    } else {
-                                        call.reject("Hardware ID not found", "NO_HARDWARE_ID");
-                                    }
-                                }
-                            }
-                    );
+                        if (exception instanceof ApiException apiException) {
+                            call.reject(apiException.getMessage());
+                        } else {
+                            call.reject("Hardware ID not found", "NO_HARDWARE_ID");
+                        }
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -224,32 +215,30 @@ public class GooglePay {
     public void getActiveWalletID(PluginCall call) {
         try {
             this.tapAndPay.getActiveWalletId()
-                    .addOnCompleteListener(
-                            task -> {
-                                Log.i(TAG, "onComplete (getActiveWalletID) - " + task.isSuccessful());
-                                if (task.isSuccessful()) {
-                                    // Next: look up token ids for the active wallet
-                                    // This typically involves network calls to a server with knowledge
-                                    // of wallets and tokens.
-                                    Log.d(TAG, "getActiveWalletID: " + task.getResult());
-                                    JSObject result = new JSObject();
-                                    result.put("walletId", task.getResult());
-                                    call.resolve(result);
-                                } else {
-                                    Exception exception = task.getException();
+                .addOnCompleteListener(task -> {
+                    Log.i(TAG, "onComplete (getActiveWalletID) - " + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                        // Next: look up token ids for the active wallet
+                        // This typically involves network calls to a server with knowledge
+                        // of wallets and tokens.
+                        Log.d(TAG, "getActiveWalletID: " + task.getResult());
+                        JSObject result = new JSObject();
+                        result.put("walletId", task.getResult());
+                        call.resolve(result);
+                    } else {
+                        Exception exception = task.getException();
 
-                                    if (exception instanceof ApiException apiException) {
-                                        if (apiException.getStatusCode() == TAP_AND_PAY_NO_ACTIVE_WALLET) {
-                                            call.reject("Active wallet not found", "NO_ACTIVE_WALLET");
-                                        } else {
-                                            call.reject(apiException.getMessage());
-                                        }
-                                    } else {
-                                        call.reject("Active wallet not found", "NO_ACTIVE_WALLET");
-                                    }
-                                }
+                        if (exception instanceof ApiException apiException) {
+                            if (apiException.getStatusCode() == TAP_AND_PAY_NO_ACTIVE_WALLET) {
+                                call.reject("Active wallet not found", "NO_ACTIVE_WALLET");
+                            } else {
+                                call.reject(apiException.getMessage());
                             }
-                    );
+                        } else {
+                            call.reject("Active wallet not found", "NO_ACTIVE_WALLET");
+                        }
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -267,7 +256,6 @@ public class GooglePay {
     }
 
     public void getTokenStatus(PluginCall call) {
-
         final String tokenReferenceId = call.getString("tokenReferenceId");
         if (tokenReferenceId == null) {
             call.reject("No tokenReferenceId found");
@@ -282,35 +270,32 @@ public class GooglePay {
 
         try {
             this.tapAndPay.getTokenStatus(getTSP(tsp), tokenReferenceId)
-                    .addOnCompleteListener(
-                            task -> {
-                                Log.i(TAG, "onComplete (getTokenStatus) - " + task.isSuccessful());
-                                if (task.isSuccessful()) {
-                                    @TapAndPay.TokenState
-                                    int tokenStateInt = task.getResult().getTokenState();
-//                                    boolean isSelected = task.getResult().isSelected();
-                                    // Next: update payment card UI to reflect token state and selection
-                                    JSObject result = new JSObject();
-                                    result.put("state", tokenStateInt);
-                                    result.put("code", GooglePay.TokenStatusReference.getName(tokenStateInt));
-                                    call.resolve(result);
-                                } else {
-                                    Exception exception = task.getException();
+                .addOnCompleteListener(task -> {
+                    Log.i(TAG, "onComplete (getTokenStatus) - " + task.isSuccessful());
+                    if (task.isSuccessful()) {
+                        @TapAndPay.TokenState
+                        int tokenStateInt = task.getResult().getTokenState();
+                        //                                    boolean isSelected = task.getResult().isSelected();
+                        // Next: update payment card UI to reflect token state and selection
+                        JSObject result = new JSObject();
+                        result.put("state", tokenStateInt);
+                        result.put("code", GooglePay.TokenStatusReference.getName(tokenStateInt));
+                        call.resolve(result);
+                    } else {
+                        Exception exception = task.getException();
 
-                                    if (exception instanceof ApiException apiException) {
-                                        if (apiException.getStatusCode() == TAP_AND_PAY_TOKEN_NOT_FOUND) {
-                                            // Could not get token status
-                                            call.reject(apiException.getMessage(), "TAP_AND_PAY_TOKEN_NOT_FOUND");
-                                        } else {
-                                            call.reject(apiException.getMessage());
-                                        }
-                                    } else {
-                                        call.reject("TOKEN_NOT_FOUND", "TAP_AND_PAY_TOKEN_NOT_FOUND");
-                                    }
-
-                                }
+                        if (exception instanceof ApiException apiException) {
+                            if (apiException.getStatusCode() == TAP_AND_PAY_TOKEN_NOT_FOUND) {
+                                // Could not get token status
+                                call.reject(apiException.getMessage(), "TAP_AND_PAY_TOKEN_NOT_FOUND");
+                            } else {
+                                call.reject(apiException.getMessage());
                             }
-                    );
+                        } else {
+                            call.reject("TOKEN_NOT_FOUND", "TAP_AND_PAY_TOKEN_NOT_FOUND");
+                        }
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -319,29 +304,27 @@ public class GooglePay {
     public void listTokens(PluginCall call) {
         try {
             this.tapAndPay.listTokens()
-                    .addOnCompleteListener(
-                            task -> {
-                                if (task.isSuccessful()) {
-                                    JSObject result = new JSObject();
-                                    JSArray tokens = new JSArray();
-                                    Log.i(TAG, "listTokens: " + task.getResult());
-                                    for (TokenInfo token : task.getResult()) {
-                                        Log.d(TAG, "Found token with ID: " + token.getIssuerTokenId());
-                                        tokens.put(token.getIssuerTokenId());
-                                    }
-                                    result.put("tokens", tokens);
-                                    call.resolve(result);
-                                } else {
-                                    Exception exception = task.getException();
-                                    Log.i(TAG, "listTokens" + exception);
-                                    if (exception instanceof ApiException apiException) {
-                                        call.reject(apiException.getMessage());
-                                    } else {
-                                        call.reject("LIST_TOKEN_ERROR", "LIST_TOKEN_ERROR");
-                                    }
-                                }
-                            }
-                    );
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        JSObject result = new JSObject();
+                        JSArray tokens = new JSArray();
+                        Log.i(TAG, "listTokens: " + task.getResult());
+                        for (TokenInfo token : task.getResult()) {
+                            Log.d(TAG, "Found token with ID: " + token.getIssuerTokenId());
+                            tokens.put(token.getIssuerTokenId());
+                        }
+                        result.put("tokens", tokens);
+                        call.resolve(result);
+                    } else {
+                        Exception exception = task.getException();
+                        Log.i(TAG, "listTokens" + exception);
+                        if (exception instanceof ApiException apiException) {
+                            call.reject(apiException.getMessage());
+                        } else {
+                            call.reject("LIST_TOKEN_ERROR", "LIST_TOKEN_ERROR");
+                        }
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -360,36 +343,33 @@ public class GooglePay {
         }
         try {
             IsTokenizedRequest request = new IsTokenizedRequest.Builder()
-                    .setIdentifier(lastDigits)
-                    .setNetwork(getCardNetwork(tsp))
-                    .setTokenServiceProvider(getTSP(tsp))
-                    .build();
+                .setIdentifier(lastDigits)
+                .setNetwork(getCardNetwork(tsp))
+                .setTokenServiceProvider(getTSP(tsp))
+                .build();
 
             this.tapAndPay.isTokenized(request)
-                    .addOnCompleteListener(
-                            task -> {
-                                if (task.isSuccessful()) {
-                                    Boolean isTokenized = task.getResult();
-                                    JSObject result = new JSObject();
-                                    result.put("isTokenized", isTokenized.booleanValue());
-                                    call.resolve(result);
-                                } else {
-
-                                    Exception exception = task.getException();
-                                    if (exception instanceof ApiException apiException) {
-                                        call.reject(apiException.getMessage(), ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
-                                    } else {
-                                        if (exception != null) {
-                                            call.reject(exception.getMessage(), ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
-                                        } else {
-                                            call.reject("IS_TOKENIZED_ERROR", ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
-                                        }
-                                    }
-
-                                    Log.i(TAG, "isTokenized" + exception);
-                                }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Boolean isTokenized = task.getResult();
+                        JSObject result = new JSObject();
+                        result.put("isTokenized", isTokenized.booleanValue());
+                        call.resolve(result);
+                    } else {
+                        Exception exception = task.getException();
+                        if (exception instanceof ApiException apiException) {
+                            call.reject(apiException.getMessage(), ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
+                        } else {
+                            if (exception != null) {
+                                call.reject(exception.getMessage(), ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
+                            } else {
+                                call.reject("IS_TOKENIZED_ERROR", ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
                             }
-                    );
+                        }
+
+                        Log.i(TAG, "isTokenized" + exception);
+                    }
+                });
         } catch (Exception e) {
             call.reject(e.getMessage(), ErrorCodeReference.IS_TOKENIZED_ERROR.getError());
         }
@@ -425,25 +405,25 @@ public class GooglePay {
         }
         try {
             UserAddress userAddress = UserAddress
-                    .newBuilder()
-                    .setName(Objects.requireNonNullElse(address.getString("name"), ""))
-                    .setAddress1(Objects.requireNonNullElse(address.getString("address1"), ""))
-                    .setAddress2(Objects.requireNonNullElse(address.getString("address2"), ""))
-                    .setLocality(Objects.requireNonNullElse(address.getString("locality"), ""))
-                    .setAdministrativeArea(Objects.requireNonNullElse(address.getString("administrativeArea"), ""))
-                    .setCountryCode(Objects.requireNonNullElse(address.getString("countryCode"), ""))
-                    .setPostalCode(Objects.requireNonNullElse(address.getString("postalCode"), ""))
-                    .setPhoneNumber(Objects.requireNonNullElse(address.getString("phoneNumber"), ""))
-                    .build();
+                .newBuilder()
+                .setName(Objects.requireNonNullElse(address.getString("name"), ""))
+                .setAddress1(Objects.requireNonNullElse(address.getString("address1"), ""))
+                .setAddress2(Objects.requireNonNullElse(address.getString("address2"), ""))
+                .setLocality(Objects.requireNonNullElse(address.getString("locality"), ""))
+                .setAdministrativeArea(Objects.requireNonNullElse(address.getString("administrativeArea"), ""))
+                .setCountryCode(Objects.requireNonNullElse(address.getString("countryCode"), ""))
+                .setPostalCode(Objects.requireNonNullElse(address.getString("postalCode"), ""))
+                .setPhoneNumber(Objects.requireNonNullElse(address.getString("phoneNumber"), ""))
+                .build();
 
             PushTokenizeRequest pushTokenizeRequest = new PushTokenizeRequest.Builder()
-                    .setOpaquePaymentCard(opc)
-                    .setNetwork(getCardNetwork(tsp))
-                    .setTokenServiceProvider(getTSP(tsp))
-                    .setDisplayName(clientName)
-                    .setLastDigits(lastDigits)
-                    .setUserAddress(userAddress)
-                    .build();
+                .setOpaquePaymentCard(opc)
+                .setNetwork(getCardNetwork(tsp))
+                .setTokenServiceProvider(getTSP(tsp))
+                .setDisplayName(clientName)
+                .setLastDigits(lastDigits)
+                .setUserAddress(userAddress)
+                .build();
             Log.i(TAG, "PUSHPROVISION --- 2");
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
@@ -455,6 +435,72 @@ public class GooglePay {
             tapAndPay.pushTokenize(bridge.getActivity(), pushTokenizeRequest, REQUEST_CODE_PUSH_TOKENIZE);
         } catch (Exception e) {
             call.reject(e.getMessage(), ErrorCodeReference.PUSH_PROVISION_ERROR.getError());
+        }
+    }
+
+    public void resumeTokenization(PluginCall call) {
+        String tokenReferenceId = call.getString("tokenReferenceId");
+        String tsp = call.getString("tsp");
+
+        if (tokenReferenceId == null || tokenReferenceId.isEmpty()) {
+            call.reject("Se requiere tokenReferenceId");
+            return;
+        }
+
+        if (tsp == null || tsp.isEmpty()) {
+            call.reject("Se requiere tsp");
+            return;
+        }
+
+        try {
+            this.bridge.saveCall(call);
+            this.callBackId = call.getCallbackId();
+            call.setKeepAlive(true);
+
+            Task<TokenizationResult> task = tapAndPayClient.tokenize(
+                bridge.getActivity(),
+                tokenReferenceId,
+                getTSP(tsp), // Pasamos el TSP aquí
+                null, // cardNetwork (puede ser null según la documentación)
+                REQUEST_CODE_ACTION_TOKEN // Usamos el mismo request code que para requestSelectToken y requestDeleteToken
+            );
+
+            task.addOnCompleteListener(task1 -> {
+                if (task1.isSuccessful()) {
+                    TokenizationResult result = task1.getResult();
+                    JSObject ret = new JSObject();
+                    if (result != null) {
+                        ret.put("isSuccess", true);
+                        ret.put("tokenId", result.getToken()); // Agrega el token al resultado
+                    } else {
+                        ret.put("isSuccess", true); // Aunque result sea null, consideramos éxito.
+                        Log.w(
+                            TAG,
+                            "TokenizationResult is null but task is successful. This may indicate a successful resumption without new token data."
+                        );
+                    }
+                    call.resolve(ret);
+                } else {
+                    Exception exception = task1.getException();
+                    String errorMessage = "Error al reanudar la tokenización";
+                    String errorCode = ErrorCodeReference.ACTION_TOKEN_ERROR.getError();
+
+                    if (exception instanceof ApiException apiException) {
+                        errorMessage = apiException.getMessage();
+                        errorCode = String.valueOf(apiException.getStatusCode()); // Usa el código de estado de la API como código de error
+                    } else if (exception != null) {
+                        errorMessage = exception.getMessage();
+                    }
+                    call.reject(errorMessage, errorCode);
+                }
+                this.bridge.releaseCall(callBackId);
+                call.setKeepAlive(false);
+            });
+        } catch (Exception e) {
+            call.reject(
+                "Error al iniciar la reanudación de la tokenización: " + e.getMessage(),
+                ErrorCodeReference.ACTION_TOKEN_ERROR.getError()
+            );
         }
     }
 
@@ -513,9 +559,12 @@ public class GooglePay {
                 if (adapter.isEnabled()) {
                     CardEmulation emulation = CardEmulation.getInstance(adapter);
                     boolean isDefault = emulation.isDefaultServiceForCategory(
-                            new ComponentName(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
-                                    "com.google.android.gms.tapandpay.hce.service.TpHceService"),
-                            CardEmulation.CATEGORY_PAYMENT);
+                        new ComponentName(
+                            GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE,
+                            "com.google.android.gms.tapandpay.hce.service.TpHceService"
+                        ),
+                        CardEmulation.CATEGORY_PAYMENT
+                    );
                     result.put("isDefault", isDefault);
                     result.put("isNFCOn", true);
                     call.resolve(result);
@@ -537,28 +586,29 @@ public class GooglePay {
             Intent intent = new Intent(CardEmulation.ACTION_CHANGE_DEFAULT);
             intent.putExtra(CardEmulation.EXTRA_CATEGORY, CardEmulation.CATEGORY_PAYMENT);
             intent.putExtra(
-                    CardEmulation.EXTRA_SERVICE_COMPONENT,
-                    new ComponentName(
-                            "com.google.android.gms",
-                            "com.google.android.gms.tapandpay.hce.service.TpHceService"));
+                CardEmulation.EXTRA_SERVICE_COMPONENT,
+                new ComponentName("com.google.android.gms", "com.google.android.gms.tapandpay.hce.service.TpHceService")
+            );
 
             this.bridge.saveCall(call);
             this.callBackId = call.getCallbackId();
             call.setKeepAlive(true);
-            ActivityResultLauncher<Intent> launcher = this.bridge.registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        // Handle the result here
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // Success, do something
-                            JSObject ret = new JSObject();
-                            ret.put("isDefault", true);
-                            call.resolve(ret);
-                        } else {
-                            // Failure, handle error
-                            call.reject("Default payment set cancelled", ErrorCodeReference.SET_DEFAULT_PAYMENTS_ERROR.getError());
+            ActivityResultLauncher<Intent> launcher =
+                this.bridge.registerForActivityResult(
+                        new ActivityResultContracts.StartActivityForResult(),
+                        result -> {
+                            // Handle the result here
+                            if (result.getResultCode() == Activity.RESULT_OK) {
+                                // Success, do something
+                                JSObject ret = new JSObject();
+                                ret.put("isDefault", true);
+                                call.resolve(ret);
+                            } else {
+                                // Failure, handle error
+                                call.reject("Default payment set cancelled", ErrorCodeReference.SET_DEFAULT_PAYMENTS_ERROR.getError());
+                            }
                         }
-                    });
+                    );
 
             launcher.launch(intent);
         } catch (Exception e) {
@@ -566,20 +616,17 @@ public class GooglePay {
         }
     }
 
-
     public void registerDataChangedListener(PluginCall call) {
         try {
-            this.tapAndPay.registerDataChangedListener(
-                    () -> {
-                        Log.i(TAG, call.toString());
-                        JSObject result = new JSObject();
-                        result.put("value", "OK");
-                        assert this.dataChangeListener != null;
-                        this.dataChangeCallBackId = call.getCallbackId();
-                        call.setKeepAlive(true);
-                        this.dataChangeListener.onDateChanged("registerDataChangedListener", result, true);
-                    }
-            );
+            this.tapAndPay.registerDataChangedListener(() -> {
+                    Log.i(TAG, call.toString());
+                    JSObject result = new JSObject();
+                    result.put("value", "OK");
+                    assert this.dataChangeListener != null;
+                    this.dataChangeCallBackId = call.getCallbackId();
+                    call.setKeepAlive(true);
+                    this.dataChangeListener.onDateChanged("registerDataChangedListener", result, true);
+                });
         } catch (Exception e) {
             call.reject(e.getMessage());
         }
@@ -602,5 +649,4 @@ public class GooglePay {
             default -> 0;
         };
     }
-
 }
