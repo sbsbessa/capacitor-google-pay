@@ -238,6 +238,15 @@ export interface GooglePayPlugin {
    *
    * @since 1.0.0
    */
+  resumeTokenization(options: GooglePayTokenOptions): Promise<{ isSuccess: boolean; tokenId?: string }>;
+
+  /**
+   *  Requests setting token as default in Google Pay
+   * @param options {GooglePayTokenOptions} Token Options
+   * @return {Promise<{ isSuccess: boolean }>}
+   *
+   * @since 1.0.0
+   */
   requestSelectToken(options: GooglePayTokenOptions): Promise<{ isSuccess: boolean }>;
 
   /**
